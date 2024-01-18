@@ -1,9 +1,9 @@
-package model;
+package simpleGameModel;
 
 import java.awt.Point;
 import java.util.List;
-import logic.MoveGenerator;
-import logic.MoveLogic;
+import gameLogic.MoveCreator;
+import gameLogic.MoveLogic;
 
 
 public class Game {
@@ -53,13 +53,13 @@ public class Game {
 
 		Point middle = Board.middle(startIndex, endIndex);
 		int midIndex = Board.toIndex(middle);
-		this.board.set(endIndex, board.get(startIndex));
+		this.board.set(endIndex, board.getID(startIndex));
 		this.board.set(midIndex, Board.EMPTY);
 		this.board.set(startIndex, Board.EMPTY);
 		
 		// Из шашек в дамки
 		Point end = Board.toPoint(endIndex);
-		int id = board.get(endIndex);
+		int id = board.getID(endIndex);
 		boolean switchTurn = false;
 		if (end.y == 0 && id == Board.WHITE_CHECKER) {
 			this.board.set(endIndex, Board.WHITE_KING);
@@ -74,7 +74,7 @@ public class Game {
 		if (midValid) {
 			this.skipIndex = endIndex;
 		}
-		if (!midValid || MoveGenerator.getSkips(
+		if (!midValid || MoveCreator.getSkips(
 				board.copy(), endIndex).isEmpty()) {
 			switchTurn = true;
 		}
@@ -110,8 +110,8 @@ public class Game {
 		List<Point> test = isP1Turn? black : white;
 		for (Point p : test) {
 			int i = Board.toIndex(p);
-			if (!MoveGenerator.getMoves(board, i).isEmpty() ||
-					!MoveGenerator.getSkips(board, i).isEmpty()) {
+			if (!MoveCreator.getMoves(board, i).isEmpty() ||
+					!MoveCreator.getSkips(board, i).isEmpty()) {
 				return false;
 			}
 		}
@@ -129,11 +129,12 @@ public class Game {
 		return skipIndex;
 	}
 
+	//состояние игры в виде строки из id черных клеток(состояний)+проверка 1 хода+skipIndex
 	public String getGameState() {
 
 		String state = "";
 		for (int i = 0; i < 32; i ++) {
-			state += "" + board.get(i);
+			state += "" + board.getID(i);
 		}
 		
 		// Add the other info

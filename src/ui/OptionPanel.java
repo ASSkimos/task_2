@@ -22,7 +22,7 @@ public class OptionPanel extends JPanel {
 
         // Инициализация основных компонентов
         OptionListener ol = new OptionListener();
-        this.restartBtn = new JButton("Restart");
+        this.restartBtn = new JButton("Начать снова");
         this.restartBtn.addActionListener(ol);
         JPanel top = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel middle = new JPanel(new FlowLayout(FlowLayout.LEFT));

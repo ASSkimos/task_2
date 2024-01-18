@@ -1,5 +1,4 @@
 package ui;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -10,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
-import logic.MoveGenerator;
-import model.Board;
-import model.Game;
+import gameLogic.MoveCreator;
+import simpleGameModel.Board;
+import simpleGameModel.Game;
 // графическое представление доски и шашек
 
 public class CheckerBoard extends JButton {
@@ -23,7 +22,6 @@ public class CheckerBoard extends JButton {
 
 
 	private Point selected;
-	
 
 	private boolean selectionValid;
 
@@ -49,7 +47,7 @@ public class CheckerBoard extends JButton {
 		// начало игры
 		this.game = (game == null)? new Game() : game;
 		this.lightTile = Color.WHITE;
-		this.darkTile = Color.BLACK;
+		this.darkTile = new Color(115,66,34);
 	}
 	
 	//перерисовка игры
@@ -87,43 +85,43 @@ public class CheckerBoard extends JButton {
 		// Отображение доски
 		final int box_padding = 4;
 		final int w = getWidth(), h = getHeight();
-		final int dim = w < h? w : h, BOX_SIZE = (dim - 2 * PADDING) / 8;
-		final int offset_x = (w - BOX_SIZE * 8) / 2;
-		final int offset_y = (h - BOX_SIZE * 8) / 2;
-		final int checker_size = Math.max(0, BOX_SIZE - 2 * box_padding);
+		final int dim = w < h? w : h, box_size = (dim - 2 * PADDING) / 8;
+		final int offset_x = (w - box_size * 8) / 2;
+		final int offset_y = (h - box_size * 8) / 2;
+		final int checker_size = Math.max(0, box_size - 2 * box_padding);
 
 		g.setColor(Color.BLACK);
-		g.drawRect(offset_x - 1, offset_y - 1, BOX_SIZE * 8 + 1, BOX_SIZE * 8 + 1);
+		g.drawRect(offset_x - 1, offset_y - 1, box_size * 8 + 1, box_size * 8 + 1);
 		g.setColor(lightTile);
-		g.fillRect(offset_x, offset_y, BOX_SIZE * 8, BOX_SIZE * 8);
+		g.fillRect(offset_x, offset_y, box_size * 8, box_size * 8);
 		g.setColor(darkTile);
 		for (int y = 0; y < 8; y ++) {
 			for (int x = (y + 1) % 2; x < 8; x += 2) {
-				g.fillRect(offset_x + x * BOX_SIZE, offset_y + y * BOX_SIZE,
-						BOX_SIZE, BOX_SIZE);
+				g.fillRect(offset_x + x * box_size, offset_y + y * box_size,
+						box_size, box_size);
 			}
 		}
 
 		if (Board.isValidPoint(selected)) {
 			g.setColor(selectionValid? Color.GREEN : Color.RED);
-			g.fillRect(offset_x + selected.x * BOX_SIZE,
-					offset_y + selected.y * BOX_SIZE,
-					BOX_SIZE, BOX_SIZE);
+			g.fillRect(offset_x + selected.x * box_size,
+					offset_y + selected.y * box_size,
+					box_size, box_size);
 		}
 		
 		// рисуем шашки
 		Board b = game.getBoard();
 		for (int y = 0; y < 8; y ++) {
-			int cy = offset_y + y * BOX_SIZE + box_padding;
+			int cy = offset_y + y * box_size + box_padding;
 			for (int x = (y + 1) % 2; x < 8; x += 2) {
-				int id = b.get(x, y);
+				int id = b.getID(x, y);
 				
 				// пустая плитка(пропуск)
 				if (id == Board.EMPTY) {
 					continue;
 				}
 				
-				int cx = offset_x + x * BOX_SIZE + box_padding;
+				int cx = offset_x + x * box_size + box_padding;
 				
 				// Отрисовка черной шашки
 				if (id == Board.BLACK_CHECKER) {
@@ -177,7 +175,7 @@ public class CheckerBoard extends JButton {
 					g.fillOval(cx - 1, cy - 2, checker_size, checker_size);
 				}
 				
-				// Дополнительная отрисовка
+				// Дополнительная отрисовка для дамки
 				if (Board.isKingChecker(id)) {
 					g.setColor(new Color(255, 240, 0));
 					g.drawOval(cx - 1, cy - 2, checker_size, checker_size);
@@ -186,27 +184,27 @@ public class CheckerBoard extends JButton {
 			}
 		}
 		
-		// Указываем чей ход
-		String msg = game.isP1Turn()? "Player 1's turn" : "Player 2's turn";
+		// Отрисовка указателя хода
+		String msg = game.isP1Turn()? "Ход 1 игрока" : "Ход 2 игрока";
 		int width = g.getFontMetrics().stringWidth(msg);
 		Color back = game.isP1Turn()? Color.BLACK : Color.WHITE;
 		Color front = game.isP1Turn()? Color.WHITE : Color.BLACK;
 		g.setColor(back);
-		g.fillRect(w / 2 - width / 2 - 5, offset_y + 8 * BOX_SIZE + 2,
+		g.fillRect(w / 2 - width / 2 - 5, offset_y + 8 * box_size + 2,
 				width + 10, 15);
 		g.setColor(front);
-		g.drawString(msg, w / 2 - width / 2, offset_y + 8 * BOX_SIZE + 2 + 12);
+		g.drawString(msg, w / 2 - width / 2, offset_y + 8 * box_size + 2 + 12);
 
 		if (isGameOver) {
 			g.setFont(new Font("Arial", Font.BOLD, 20));
-			msg = "Game Over!";
+			msg = "Игра Окончена!";
 			width = g.getFontMetrics().stringWidth(msg);
 			g.setColor(new Color(240, 240, 255));
 			g.fillRoundRect(w / 2 - width / 2 - 5,
-					offset_y + BOX_SIZE * 4 - 16,
+					offset_y + box_size * 4 - 16,
 					width + 10, 30, 10, 10);
 			g.setColor(Color.RED);
-			g.drawString(msg, w / 2 - width / 2, offset_y + BOX_SIZE * 4 + 7);
+			g.drawString(msg, w / 2 - width / 2, offset_y + box_size * 4 + 7);
 		}
 	}
 	
@@ -224,11 +222,11 @@ public class CheckerBoard extends JButton {
 		
 		// определяем какой квадратик выбран
 		final int w = getWidth(), h = getHeight();
-		final int dim = w < h? w : h, BOX_SIZE = (dim - 2 * PADDING) / 8;
-		final int offset_x = (w - BOX_SIZE * 8) / 2;
-		final int offset_y = (h - BOX_SIZE * 8) / 2;
-		x = (x - offset_x) / BOX_SIZE;
-		y = (y - offset_y) / BOX_SIZE;
+		final int dim = w < h? w : h, box_size = (dim - 2 * PADDING) / 8;
+		final int offset_x = (w - box_size * 8) / 2;
+		final int offset_y = (h - box_size * 8) / 2;
+		x = (x - offset_x) / box_size;
+		y = (y - offset_y) / box_size;
 		Point sel = new Point(x, y);
 		
 		// определяем возможно ли с него пойти
@@ -236,8 +234,7 @@ public class CheckerBoard extends JButton {
 			boolean change = copy.isP1Turn();
 			String expected = copy.getGameState();
 			boolean move = copy.move(selected, sel);
-			boolean updated = (move?
-					setGameState(true, copy.getGameState(), expected) : false);//для плавного перехода
+			boolean updated = (move? setGameState(true, copy.getGameState(), expected) : false);
 			change = (copy.isP1Turn() != change);
 			this.selected = change? null : sel;
 		} else {
@@ -254,14 +251,14 @@ public class CheckerBoard extends JButton {
 	private boolean isValidSelection(Board b, boolean isP1Turn, Point selected) {
 
 		// Trivial cases
-		int i = Board.toIndex(selected), id = b.get(i);
+		int i = Board.toIndex(selected), id = b.getID(i);
 		if (id == Board.EMPTY || id == Board.INVALID) { // нет шашки
 			return false;
 		} else if(isP1Turn ^ Board.isBlackChecker(id)) { // не та шашка
 			return false;
-		} else if (!MoveGenerator.getSkips(b, i).isEmpty()) { // требуется бить шашку
+		} else if (!MoveCreator.getSkips(b, i).isEmpty()) { // требуется бить шашку
 			return true;
-		} else if (MoveGenerator.getMoves(b, i).isEmpty()) { // нет ходов
+		} else if (MoveCreator.getMoves(b, i).isEmpty()) { // нет ходов
 			return false;
 		}
 
@@ -274,7 +271,7 @@ public class CheckerBoard extends JButton {
 			if (checker == i) {
 				continue;
 			}
-			if (!MoveGenerator.getSkips(b, checker).isEmpty()) {
+			if (!MoveCreator.getSkips(b, checker).isEmpty()) {
 				return false;
 			}
 		}

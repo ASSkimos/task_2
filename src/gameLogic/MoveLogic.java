@@ -1,8 +1,8 @@
-package logic;
+package gameLogic;
 import java.awt.Point;
 import java.util.List;
-import model.Board;
-import model.Game;
+import simpleGameModel.Board;
+import simpleGameModel.Game;
 
 //класс для реализации логики шашек
 public class MoveLogic {
@@ -13,8 +13,7 @@ public class MoveLogic {
                 game.isP1Turn(), startIndex, endIndex, game.getSkipIndex());
     }
 
-    public static boolean isValidMove(Board board, boolean isP1Turn,
-                                      int startIndex, int endIndex, int skipIndex) {
+    public static boolean isValidMove(Board board, boolean isP1Turn, int startIndex, int endIndex, int skipIndex) {
 
         // Нет доски или вышли за её грани
         if (board == null || !Board.isValidIndex(startIndex) || !Board.isValidIndex(endIndex)) {
@@ -39,12 +38,12 @@ public class MoveLogic {
                                        int startIndex, int endIndex) {
 
         // проверка на то, что в конечной клетке нет шашки
-        if (board.get(endIndex) != Board.EMPTY) {
+        if (board.getID(endIndex) != Board.EMPTY) {
             return false;
         }
 
         //проверка на то, что цвет выбранная шашка соответствует ходу
-        int id = board.get(startIndex);
+        int id = board.getID(startIndex);
         if ((isP1Turn && !Board.isBlackChecker(id))
                 || (!isP1Turn && !Board.isWhiteChecker(id))) {
             return false;
@@ -52,7 +51,7 @@ public class MoveLogic {
 
         // Через своих не ходим
         Point middle = Board.middle(startIndex, endIndex);
-        int midID = board.get(Board.toIndex(middle));
+        int midID = board.getID(Board.toIndex(middle));
         if (midID != Board.INVALID && ((!isP1Turn &&
                 !Board.isBlackChecker(midID)) ||
                 (isP1Turn && !Board.isWhiteChecker(midID)))) {
@@ -75,7 +74,7 @@ public class MoveLogic {
         }
 
         // Проверка на то, что белые должны идти вверх, а черные вниз
-        int id = board.get(startIndex);
+        int id = board.getID(startIndex);
         if ((id == Board.WHITE_CHECKER && dy > 0) ||
                 (id == Board.BLACK_CHECKER && dy < 0)) {
             return false;
@@ -83,7 +82,7 @@ public class MoveLogic {
 
         // Проверка на то, что никого не бьем
         Point middle = Board.middle(startIndex, endIndex);
-        int midID = board.get(Board.toIndex(middle));
+        int midID = board.getID(Board.toIndex(middle));
         if (midID < 0) {
             List<Point> checkers;
             if (isP1Turn) {

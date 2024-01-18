@@ -1,11 +1,11 @@
-package logic;
+package gameLogic;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import model.Board;
+import simpleGameModel.Board;
 
 //класс для определения возможности того или иного хода
-public class MoveGenerator {
+public class MoveCreator {
 
 
 	public static List<Point> getMoves(Board board, int startIndex) {
@@ -18,14 +18,14 @@ public class MoveGenerator {
 		}
 		
 		// Добавление всех возможных ходов без учета состояния игры
-		int id = board.get(startIndex);
+		int id = board.getID(startIndex);
 		Point p = Board.toPoint(startIndex);
 		addPoints(endPoints, p, id, 1);
 		
 		// Удаление невозможных ходов
 		for (int i = 0; i < endPoints.size(); i ++) {
 			Point end = endPoints.get(i);
-			if (board.get(end.x, end.y) != Board.EMPTY) {
+			if (board.getID(end.x, end.y) != Board.EMPTY) {
 				endPoints.remove(i --);
 			}
 		}
@@ -42,7 +42,7 @@ public class MoveGenerator {
 		}
 
 		// Добавление всех возможных ходов без учета состояния игры
-		int id = board.get(startIndex);
+		int id = board.getID(startIndex);
 		Point p = Board.toPoint(startIndex);
 		addPoints(endPoints, p, id, 2);
 
@@ -64,13 +64,13 @@ public class MoveGenerator {
 			return false;
 		}
 
-		if (board.get(endIndex) != Board.EMPTY) {
+		if (board.getID(endIndex) != Board.EMPTY) {
 			return false;
 		}
 
 		// Проверка на то, что бьем шашку
-		int id = board.get(startIndex);
-		int midID = board.get(Board.toIndex(Board.middle(startIndex, endIndex)));
+		int id = board.getID(startIndex);
+		int midID = board.getID(Board.toIndex(Board.middle(startIndex, endIndex)));
 		if (id == Board.INVALID || id == Board.EMPTY) {
 			return false;
 		} else if (midID == Board.INVALID || midID == Board.EMPTY) {
