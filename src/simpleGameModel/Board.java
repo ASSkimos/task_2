@@ -11,13 +11,13 @@ public class Board {
 
     public static final int EMPTY = 0;// id пустой клетки
 
-    public static final int BLACK_CHECKER = 4 * 1 + 2 * 1 + 1 * 0;
+    public static final int BLACK_CHECKER = 4 * 1 + 2 * 1 + 1 * 0;//110
 
-    public static final int WHITE_CHECKER = 4 * 1 + 2 * 0 + 1 * 0;
+    public static final int WHITE_CHECKER = 4 * 1 + 2 * 0 + 1 * 0;//100
 
-    public static final int BLACK_KING = 4 * 1 + 2 * 1 + 1 * 1;
+    public static final int BLACK_KING = 4 * 1 + 2 * 1 + 1 * 1;//111
 
-    public static final int WHITE_KING = 4 * 1 + 2 * 0 + 1 * 1;
+    public static final int WHITE_KING = 4 * 1 + 2 * 0 + 1 * 1;//101
 
     private int[] state;
 
@@ -69,7 +69,7 @@ public class Board {
             id = EMPTY;
         }
 
-        // состояние игры в битах
+        // изменение состояния черной клетки (в битах)
         for (int i = 0; i < state.length; i++) {
             boolean set = ((1 << (state.length - i - 1)) & id) != 0;
             this.state[i] = setBit(state[i], index, set);
@@ -119,7 +119,7 @@ public class Board {
                 + getBit(state[2], index);
     }
 
-    //метод преобразования из индекса в точку(index=0, point(1,0), index=31,  point(7,7))
+    //метод преобразования из индекса в точку(index=0, point(1,0), index=31,  point(6,7))
     public static Point toPoint(int index) {
         int y = index / 4;
         int x = 2 * (index % 4) + (y + 1) % 2;
