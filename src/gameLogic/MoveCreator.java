@@ -2,7 +2,7 @@ package gameLogic;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import simpleGameModel.Board;
+import gameModel.Board;
 
 //класс для определения возможности того или иного хода
 public class MoveCreator {

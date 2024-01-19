@@ -1,4 +1,4 @@
-package ui;
+package gameUi;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -10,8 +10,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import gameLogic.MoveCreator;
-import simpleGameModel.Board;
-import simpleGameModel.Game;
+import gameModel.Board;
+import gameModel.Game;
 // графическое представление доски и шашек
 
 public class CheckerBoard extends JButton {

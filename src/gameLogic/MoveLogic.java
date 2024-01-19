@@ -1,8 +1,8 @@
 package gameLogic;
 import java.awt.Point;
 import java.util.List;
-import simpleGameModel.Board;
-import simpleGameModel.Game;
+import gameModel.Board;
+import gameModel.Game;
 
 //класс для реализации логики шашек
 public class MoveLogic {

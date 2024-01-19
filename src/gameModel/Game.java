@@ -1,4 +1,4 @@
-package simpleGameModel;
+package gameModel;
 
 import java.awt.Point;
 import java.util.List;

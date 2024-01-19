@@ -1,4 +1,4 @@
-package ui;
+package gameUi;
 
 
 public class Main {
