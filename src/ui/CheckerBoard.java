@@ -57,9 +57,8 @@ public class CheckerBoard extends JButton {
 	}
 
 
-	
-	public synchronized boolean setGameState(boolean testValue,//потокобезопасность
-			String newState, String expected) {
+	//установить новое состояние игры+synchronized для потокобезопасности
+	public synchronized boolean setGameState(boolean testValue, String newState, String expected) {
 
 		if (testValue && !game.getGameState().equals(expected)) {
 			return false;
