@@ -58,7 +58,7 @@ public class CheckerBoard extends JButton {
 
 
 	
-	public synchronized boolean setGameState(boolean testValue,//выполняется только 1 потоком
+	public synchronized boolean setGameState(boolean testValue,//потокобезопасность
 			String newState, String expected) {
 
 		if (testValue && !game.getGameState().equals(expected)) {
@@ -250,7 +250,6 @@ public class CheckerBoard extends JButton {
 
 	private boolean isValidSelection(Board b, boolean isP1Turn, Point selected) {
 
-		// Trivial cases
 		int i = Board.toIndex(selected), id = b.getID(i);
 		if (id == Board.EMPTY || id == Board.INVALID) { // нет шашки
 			return false;
@@ -262,10 +261,8 @@ public class CheckerBoard extends JButton {
 			return false;
 		}
 
-		List<Point> points = b.find(
-				isP1Turn? Board.BLACK_CHECKER : Board.WHITE_CHECKER);
-		points.addAll(b.find(
-				isP1Turn? Board.BLACK_KING : Board.WHITE_KING));
+		List<Point> points = b.find(isP1Turn? Board.BLACK_CHECKER : Board.WHITE_CHECKER);
+		points.addAll(b.find(isP1Turn? Board.BLACK_KING : Board.WHITE_KING));
 		for (Point p : points) {
 			int checker = Board.toIndex(p);
 			if (checker == i) {
