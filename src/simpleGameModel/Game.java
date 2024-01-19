@@ -12,7 +12,7 @@ public class Game {
 
 	private boolean isP1Turn;
 
-	private int skipIndex;//индекс множественности битья шашек
+	private int skipIndex;//индекс того, сколько шашек можем побить
 	
 	public Game() {
 

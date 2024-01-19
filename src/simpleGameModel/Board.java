@@ -6,7 +6,7 @@ import java.util.List;
 //реализация доски 8 на 8(шашки только на черных клетках). Черных клеток ровно половину (32)с индексами
 //  от 0 да 31
 public class Board {
-
+//Основные состояния клеток
     public static final int INVALID = -1;// id точки, находящейся не на доске
 
     public static final int EMPTY = 0;// id пустой клетки
